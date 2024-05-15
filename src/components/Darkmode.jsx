@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { FormCheck } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 // Importez les fichiers audio
 import daySound from './Audio/jour.wav';
@@ -31,9 +33,18 @@ const Dark = () => {
 
     return (
         <div className="App">
-                <button onClick={toggleDarkMode}>
-                    {isDarkMode ? 'Mode Jour' : 'Mode Nuit'}
-                </button>
+            <FormCheck 
+                type="switch"
+                id="custom-switch"
+                label={
+                    <>
+                        <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} className="mr-2" />
+                        
+                    </>
+                }
+                checked={isDarkMode}
+                onChange={toggleDarkMode}
+            />
         </div>
     );
 };

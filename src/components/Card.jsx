@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
+import { Card, CardHeader, CardBody } from "@nextui-org/react";
 
-function Card() {
-  const profileLinks = ['twitter', 'linkedin', 'dribbble', 'facebook'];
+function ProjectCard() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -25,45 +25,28 @@ function Card() {
   }, []);
 
   return (
-    <>
-    {projects.map(project => (
-        <div className='card-container' key={project.id}>
-          <div className='card-body'>
-            {/* Affichage de chaque projet sous forme de carte */}
-            <div className="card">
-              {/* Face avant de la carte */}
-              <div className='card-side side-front'>
-                <div className='container-fluid'>
-                  <div className='row'>
-                    <div className='col-xs-6'>
-                      <img src={`http://localhost:1337${project.attributes.image.data.attributes.url}`} alt={project.name} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Face arrière de la carte */}
-              <div className='card-side side-back'>
-                <div className='container-fluid'>
-                  <h1>{project.attributes.title}</h1>
-                  {/* Affichez ici d'autres détails du projet si nécessaire */}
-                  <div className='card-social-links'>
-                    <ul className='social-links'>
-                      {profileLinks.map((link, index) =>
-                        <li key={index}><a href='#'><i className={'fa fa-' + link}></i></a></li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="center-content"> {/* Conteneur pour centrer le contenu horizontalement */}
+      {projects.map(project => (
+        <Card className="py-4" key={project.id}>
+          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+            <h1 className="text-tiny uppercase font-bold">{project.attributes.title}</h1>
+            <h2 className="text-default-500">{project.attributes.description}</h2>
+
+          </CardHeader>
+          <CardBody className="overflow-visible py-2">
+            <Link to={`/projects/${project.id}`}>
+              <img
+                alt={project.attributes.name}
+                className="object-cover rounded-xl"
+                src={`http://localhost:1337${project.attributes.image.data.attributes.url}`}
+                width={670}
+              />
+            </Link>
+          </CardBody>
+        </Card>
       ))}
-      </>
-
-
-
+    </div>
   );
 }
 
-export default Card;
+export default ProjectCard;

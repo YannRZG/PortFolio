@@ -1,43 +1,48 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 
-function Scroll() {
-  const [projects, setProjects] = useState([]);
-  const ref = useRef(null);
+const Project = () => {
+  const { projectId } = useParams(); // Récupère l'identifiant du projet depuis l'URL de la page
+  const [project, setProject] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:1337/api/projects', {
+    console.log("ID du projet:", projectId); // Avant la requête fetch pour vérifier l'ID du projet
+
+    fetch(`http://localhost:1337/api/projects/${projectId}?populate=image`, {
       headers: {
         'Authorization': `Bearer ${import.meta.env.VITE_API_KEY}`
       }
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error('Réponse réseau non OK');
+        throw new Error('Erreur lors de la récupération des données du projet');
       }
       return response.json();
     })
-    .then(data => setProjects(data.data || []))
+    .then(data => {
+      console.log("Données du projet:", data); // Après la récupération des données pour vérifier les données du projet
+      setProject(data); // Assurez-vous que data est au format attendu
+    })
     .catch(error => {
-      console.error('Erreur lors de la récupération des projets:', error);
-      setProjects([]);
+      console.error("Erreur de récupération des données:", error); // En cas d'erreur lors de la récupération des données
     });
-  }, []);
+  }, [projectId]); // Exécute l'effet à chaque fois que l'identifiant du projet change
 
-  console.log(projects);
+  if (!project) {
+    return <div>Chargement...</div>; // Affiche un message de chargement tant que les données du projet ne sont pas disponibles
+  }
 
   return (
-    <div ref={ref}>
-      {projects.map((project) => (
-        <section key={project.id}>
-          <div>
-            <img src={`http://localhost:1337${project.attributes.image.data.attributes.url}`} alt={project.name} />
-          </div>
-          <motion.h2>{project.attributes.title}</motion.h2>
-        </section>
-      ))}
-    </div>
+    <>
+      <div>
+        <p>{project.data.attributes.description}</p>
+        <div className='img-project'>
+        <img src={`http://localhost:1337${project.data.attributes.image.data.attributes.url}`} alt={project.name} />
+        </div>
+      </div>
+    </>
   );
-}
+};
 
-export default Scroll;
+export default Project;
